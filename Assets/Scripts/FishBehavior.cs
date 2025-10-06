@@ -5,24 +5,26 @@ using System.Collections.Generic;
 
 public class FishBehavior : MonoBehaviour
 {
-
-
-    [SerializeField]
-    Transform[] possibleTargets; //array of spots the spider can idle between
-
-    [SerializeField]
-    float lerpTimeMax; //appr. how long we want a lerp to last
+    [SerializeField] Transform fishVisual;
+    [SerializeField] float wiggleSpeed = 5f;
+    [SerializeField] float wiggleAmount = 10f;
 
     [SerializeField]
-    AnimationCurve idleWalkCurve; //anim curve to add easing to the lerp
+    Transform[] possibleTargets; 
 
     [SerializeField]
-    float hungerStep; //max time we want to wait to deincrement hunger
+    float lerpTimeMax; 
 
-    Transform target = null; //current spot we're moving towards
-    Vector3 startPos = Vector3.zero; //current spot we're moving from
+    [SerializeField]
+    AnimationCurve idleWalkCurve; 
 
-    //count of current lerp progress
+    [SerializeField]
+    float hungerStep; 
+
+    Transform target = null; 
+    Vector3 startPos = Vector3.zero; 
+
+   
     float lerpTime;
 
     //enum is like a custom variable type
@@ -50,82 +52,106 @@ public class FishBehavior : MonoBehaviour
     GameObject touchingObj;
 
     //could use to display organism stats for debugging. should NOT be in the final game
-    // [SerializeField]
-    // TMP_Text hungerText;
+     [SerializeField]
+     TMP_Text hungerText;
 
     void Start()
     {
-        FindAllFood(); //find all food objs in the scene
-        hungerTime = hungerStep; //reset our hunger timer
+        FindAllFood(); 
+        hungerTime = hungerStep; 
     }
 
     void Update()
     {
-        //hungerText.text = hungerVal.ToString();
-        //switch statement for our statement
-        //cleaner way of checking the same condition
         switch (state)
         {
-            case SpiderStates.idling: //if we're in the idle state
-                RunIdle(); //run idle code
+            case SpiderStates.idling:
+                RunIdle();
                 break;
-            case SpiderStates.eating: //if we're in the eating state
-                RunEat(); //run eating code
+            case SpiderStates.eating:
+                RunEat();
                 break;
             case SpiderStates.showering:
                 break;
             case SpiderStates.dying:
                 break;
-            default:
-                break;
         }
+        Wobble();
+        hungerText.text = "Hunger: " + hungerVal.ToString("F1");
+    }
+    void Wobble()
+    {
+        float wobble = Mathf.Sin(Time.time * wiggleSpeed) * wiggleAmount;
+        fishVisual.localRotation = Quaternion.Euler(0, 0, wobble);
     }
 
     void RunIdle()
     {
+        // ?? If hunger is low, switch to eating state
+        if (hungerVal <= 2) // <-- threshold you can tweak
+        {
+            target = null; // clear current wander target
+            state = SpiderStates.eating;
+            return;
+        }
+
+        // ?? Normal random wandering
         if (target == null)
-        { //if we do not have a target to move to
-            int newTarget = Random.Range(0, possibleTargets.Length); //find random position
-            target = possibleTargets[newTarget]; //set target to that position
-            startPos = transform.position; //set our starting pos to our current pos
-            lerpTime = 0; //reset our lerp progress
+        {
+            // pick a random position in the aquarium bounds
+            float x = Random.Range(-5f, 5f);
+            float y = Random.Range(-3f, 3f);
+            Vector3 randomPos = new Vector3(x, y, 0);
+
+            GameObject wanderPoint = new GameObject("WanderPoint");
+            wanderPoint.transform.position = randomPos;
+
+            target = wanderPoint.transform;
+            startPos = transform.position;
+            lerpTime = 0;
         }
         else
         {
-            transform.position = Move(); //move to that position
+            // Swim toward target
+            transform.position = Move();
+
+            // Arrived at wander point?
+            if (lerpTime >= lerpTimeMax)
+            {
+                Destroy(target.gameObject); // clean up wander point
+                target = null;
+            }
         }
-        StepNeeds(); //increment stat timers
-        if (hungerVal <= 0)
-        { //if our spider is hunger
-            target = null; //remove whatever target we were moving towards
-            //state = SpiderStates.eating; //switch the state to eating
-        }
-        //TO DO: find better thing to do while idle
-        //Need to make all behavior be intentional
+
+        StepNeeds(); // hunger still goes down
     }
 
     void RunEat()
     {
         if (target == null)
-        { //if we do not have a target to move to
-            target = FindNearest(allFood); //find the closest food obj and set our target to it
-            startPos = transform.position; //set our starting pos to our current pos
-            lerpTime = 0; //reset our lerp progress
+        {
+            target = FindNearest(allFood); // find closest food
+            if (target == null) // no food available
+            {
+                state = SpiderStates.idling;
+                return;
+            }
+            startPos = transform.position;
+            lerpTime = 0;
         }
         else
         {
-            transform.position = Move(); //move to food
-            if (touchingObj != null)
-            { //if we're touching a game object
-                if (touchingObj.tag == "food")
-                {  //and that object is tagged as food
-                    allFood.Remove(touchingObj); //remove that food from the food list
-                    hungerVal = 5; //reset our hunger
-                    Destroy(touchingObj); //destroy that food
-                    touchingObj = null; //empty our food tracking variable
-                    target = null; //empty our movement target
-                    state = SpiderStates.idling; //switch the state to idle
-                }
+            transform.position = Move();
+
+            if (touchingObj != null && touchingObj.CompareTag("food"))
+            {
+                allFood.Remove(touchingObj);
+                hungerVal = 5; // reset hunger
+                Destroy(touchingObj);
+
+                touchingObj = null;
+                target = null;
+                state = SpiderStates.idling;
             }
         }
     }
