@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 public class FishBehavior : MonoBehaviour
 {
+    [SerializeField] float minX = -5f, maxX = 5f;
+    [SerializeField] float minY = -3f, maxY = 3f;
+
     [SerializeField] Transform fishVisual;
     [SerializeField] float wiggleSpeed = 5f;
     [SerializeField] float wiggleAmount = 10f;
@@ -32,7 +35,6 @@ public class FishBehavior : MonoBehaviour
     enum SpiderStates
     {
         eating,
-        showering,
         dying,
         idling
     }
@@ -71,13 +73,11 @@ public class FishBehavior : MonoBehaviour
             case SpiderStates.eating:
                 RunEat();
                 break;
-            case SpiderStates.showering:
-                break;
             case SpiderStates.dying:
                 break;
         }
         Wobble();
-        hungerText.text = "Hunger: " + hungerVal.ToString("F1");
+        hungerText.text = "FishHunger: " + hungerVal.ToString("F1");
     }
     void Wobble()
     {
@@ -206,5 +206,10 @@ public class FishBehavior : MonoBehaviour
         { //if we stop touching something 
             if (col.gameObject == touchingObj) touchingObj = null; //AND that thing is being tracked, clear the touching tracking var
         }
+    }
+        
+    public bool IsChasingFood()
+    {
+        return state == SpiderStates.eating;
     }
 }

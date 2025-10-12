@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - food
+  - seaweed
+  - ShrimpWanderPoint
+  - Predator
   layers:
   - Default
   - TransparentFX

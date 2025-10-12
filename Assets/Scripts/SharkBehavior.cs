@@ -3,12 +3,12 @@ using TMPro;
 using System.Collections.Generic;
 
 
-public class ShrimpBehavior : MonoBehaviour
+public class SharkBehavior : MonoBehaviour
 {
     [SerializeField] float minX = -5f, maxX = 5f;
     [SerializeField] float minY = -3f, maxY = 3f;
 
-    [SerializeField] Transform shrimpVisual;
+    [SerializeField] Transform sharkVisual;
     // [SerializeField] float wiggleSpeed = 5f;
     // [SerializeField] float wiggleAmount = 10f;
 
@@ -46,7 +46,7 @@ public class ShrimpBehavior : MonoBehaviour
     //timer that'll count down for hunger
     float hungerTime;
     //hunger stat
-    float hungerVal = 5;
+    float hungerVal = 10;
 
     //list for food currently in the scene
     List<GameObject> allFood = new List<GameObject>();
@@ -59,11 +59,11 @@ public class ShrimpBehavior : MonoBehaviour
     TMP_Text hungerText;
 
     [SerializeField]
-    Transform fishTransform;
+    Transform shrimpTransform;
 
-    [SerializeField] FishBehavior fishScript;
+    [SerializeField] ShrimpBehavior shrimpScript;
 
-    [SerializeField] float escapeDistance = 3f;    
+    [SerializeField] float escapeDistance = 3f;
     [SerializeField] float escapeSpeed = 3f;
     void Start()
     {
@@ -73,9 +73,9 @@ public class ShrimpBehavior : MonoBehaviour
 
     void Update()
     {
-        if (fishScript != null && fishScript.IsChasingFood())
+        if (shrimpScript != null && shrimpScript.IsChasingFood())
         {
-            float distance = Vector3.Distance(transform.position, fishTransform.position);
+            float distance = Vector3.Distance(transform.position, shrimpTransform.position);
             if (distance < escapeDistance)
             {
                 state = SpiderStates.fleeing;
@@ -101,17 +101,17 @@ public class ShrimpBehavior : MonoBehaviour
                 break;
         }
         //Wobble();
-        hungerText.text = "Shrimp Hunger: " + hungerVal.ToString("F1");
+      //  hungerText.text = "Shark Hunger: " + hungerVal.ToString("F1");
     }
-   // void Wobble()
+    // void Wobble()
     //{
     //    float wobble = Mathf.Sin(Time.time * wiggleSpeed) * wiggleAmount;
-   //     fishVisual.localRotation = Quaternion.Euler(0, 0, wobble);
-   // }
+    //     fishVisual.localRotation = Quaternion.Euler(0, 0, wobble);
+    // }
 
     void RunIdle()
     {
-        // ?? If hunger is low, switch to eating state
+       
         if (hungerVal <= 3) // <-- threshold you can tweak
         {
             target = null; // clear current wander target
@@ -167,7 +167,7 @@ public class ShrimpBehavior : MonoBehaviour
         {
             transform.position = Move();
 
-            if (touchingObj != null && touchingObj.CompareTag("seaweed"))
+            if (touchingObj != null && touchingObj.CompareTag("Predator"))
             {
                 allFood.Remove(touchingObj);
                 hungerVal = 5; // reset hunger
@@ -192,54 +192,44 @@ public class ShrimpBehavior : MonoBehaviour
 
     void FindAllFood()
     {
-        allFood.AddRange(GameObject.FindGameObjectsWithTag("seaweed")); //find all objs tagged food and put them in a list
+        allFood.AddRange(GameObject.FindGameObjectsWithTag("Predator")); //find all objs tagged food and put them in a list
     }
 
     Transform FindNearest(List<GameObject> objsToFind)
     {
-        float minDist = Mathf.Infinity;
-        Transform nearest = null;
-
+        float minDist = Mathf.Infinity; 
+        Transform nearest = null; 
         for (int i = 0; i < objsToFind.Count; i++)
-        {
-            GameObject obj = objsToFind[i];
-
-            // Skip if the object is null or has been destroyed
-            if (obj == null) continue;
-
-            float dist = Vector3.Distance(transform.position, obj.transform.position);
+        { 
+            float dist = Vector3.Distance(transform.position, objsToFind[i].transform.position); 
             if (dist < minDist)
-            {
-                minDist = dist;
-                nearest = obj.transform;
+            { 
+                minDist = dist; 
+                nearest = objsToFind[i].transform;
             }
         }
-
-        return nearest;
+        return nearest; //return the closest obj
     }
 
     Vector3 Move()
     {
-        lerpTime += Time.deltaTime; 
-        float percent = idleWalkCurve.Evaluate(lerpTime / lerpTimeMax); 
+        lerpTime += Time.deltaTime;
+        float percent = idleWalkCurve.Evaluate(lerpTime / lerpTimeMax);
         Vector3 newPos = Vector3.LerpUnclamped(startPos, target.position, percent);
         return newPos; //return the new position
     }
 
     void RunAwayFromFish()
     {
-        Vector3 awayDirection = (transform.position - fishTransform.position).normalized;
+        if (shrimpTransform == null) return; // Prevent error if shrimp was destroyed
+
+        Vector3 awayDirection = (transform.position - shrimpTransform.position).normalized;
         Vector3 newPos = transform.position + awayDirection * escapeSpeed * Time.deltaTime;
- 
+
         newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
         newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
 
         transform.position = newPos;
-    }
-
-    public bool IsChasingFood()
-    {
-        return state == SpiderStates.eating;
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -255,3 +245,4 @@ public class ShrimpBehavior : MonoBehaviour
         }
     }
 }
+
