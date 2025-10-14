@@ -8,6 +8,8 @@ TagManager:
   - seaweed
   - ShrimpWanderPoint
   - Predator
+  - shrimp
+  - shark
   layers:
   - Default
   - TransparentFX

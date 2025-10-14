@@ -45,8 +45,8 @@ public class SharkBehavior : MonoBehaviour
 
     //timer that'll count down for hunger
     float hungerTime;
-    //hunger stat
-    float hungerVal = 10;
+    //hunger stat 
+    float hungerVal = 7;
 
     //list for food currently in the scene
     List<GameObject> allFood = new List<GameObject>();
@@ -96,12 +96,12 @@ public class SharkBehavior : MonoBehaviour
                 break;
             case SpiderStates.dying:
                 break;
-            case SpiderStates.fleeing:
-                RunAwayFromFish();
-                break;
+           // case SpiderStates.fleeing:
+                //RunAwayFromFish();
+                //;
         }
         //Wobble();
-      //  hungerText.text = "Shark Hunger: " + hungerVal.ToString("F1");
+        hungerText.text = "Shark Hunger: " + hungerVal.ToString("F1");
     }
     // void Wobble()
     //{
@@ -221,7 +221,7 @@ public class SharkBehavior : MonoBehaviour
 
     void RunAwayFromFish()
     {
-        if (shrimpTransform == null) return; // Prevent error if shrimp was destroyed
+        if (shrimpTransform == null) return; 
 
         Vector3 awayDirection = (transform.position - shrimpTransform.position).normalized;
         Vector3 newPos = transform.position + awayDirection * escapeSpeed * Time.deltaTime;
@@ -230,6 +230,11 @@ public class SharkBehavior : MonoBehaviour
         newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
 
         transform.position = newPos;
+    }
+
+    public bool IsChasingFood()
+    {
+        return state == SpiderStates.eating;
     }
 
     void OnTriggerEnter2D(Collider2D col)

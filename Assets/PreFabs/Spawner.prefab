@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4831283825482311573
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5119209902652874221}
+  - component: {fileID: 17845992699376456}
+  m_Layer: 0
+  m_Name: Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5119209902652874221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4831283825482311573}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.3889725, y: -0.9670379, z: -0.01631827}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &17845992699376456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4831283825482311573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b0a936ce99e6294cb88528f1602e958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eggType: 2
+  sharkEggSprite: {fileID: 0}
+  fishEggSprite: {fileID: 0}
+  shrimpEggSprite: {fileID: 0}
+  sharkPrefab: {fileID: 8555556959436243919, guid: 924d1bcc45719e246b1f07bbef5a7a79, type: 3}
+  fishPrefab: {fileID: 8516074015003904223, guid: f30dda452f629c640a216eab271515c2, type: 3}
+  shrimpPrefab: {fileID: 4092187592882392516, guid: 16683a9ab8ac8b149a866ac122e55c9d, type: 3}

@@ -8,7 +8,7 @@ public class ShrimpBehavior : MonoBehaviour
     [SerializeField] float minX = -5f, maxX = 5f;
     [SerializeField] float minY = -3f, maxY = 3f;
 
-    [SerializeField] Transform shrimpVisual;
+   public Transform shrimpVisual;
     // [SerializeField] float wiggleSpeed = 5f;
     // [SerializeField] float wiggleAmount = 10f;
 
@@ -65,10 +65,13 @@ public class ShrimpBehavior : MonoBehaviour
 
     [SerializeField] float escapeDistance = 3f;    
     [SerializeField] float escapeSpeed = 3f;
+
+
     void Start()
     {
         FindAllFood();
         hungerTime = hungerStep;
+        
     }
 
     void Update()
@@ -79,6 +82,7 @@ public class ShrimpBehavior : MonoBehaviour
             if (distance < escapeDistance)
             {
                 state = SpiderStates.fleeing;
+                target = null;
             }
             else if (state == SpiderStates.fleeing)
             {
@@ -250,7 +254,7 @@ public class ShrimpBehavior : MonoBehaviour
     void OnTriggerExit2D(Collider2D col)
     {
         if (col != null)
-        { //if we stop touching something 
+        { 
             if (col.gameObject == touchingObj) touchingObj = null; //AND that thing is being tracked, clear the touching tracking var
         }
     }

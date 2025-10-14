@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7928189778434170355}
   m_Layer: 0
   m_Name: Shrimp1
-  m_TagString: food
+  m_TagString: shrimp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -199,8 +199,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   hungerStep: 5
   hungerText: {fileID: 0}
-  fishTransform: {fileID: 0}
-  fishScript: {fileID: 0}
+  fishTransform: {fileID: 1831387513121527838, guid: f30dda452f629c640a216eab271515c2, type: 3}
+  fishScript: {fileID: 1523269023429477394, guid: f30dda452f629c640a216eab271515c2, type: 3}
   escapeDistance: 3
   escapeSpeed: 3
 --- !u!1 &7501782508886013018

@@ -385,15 +385,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d43f0be79515304eb62e495111cfb73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minX: -5
+  maxX: 5
+  minY: -3
+  maxY: 3
   fishVisual: {fileID: 7255215665699994149}
   wiggleSpeed: 5
   wiggleAmount: 10
-  possibleTargets:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  possibleTargets: []
   lerpTimeMax: 8
   idleWalkCurve:
     serializedVersion: 2
@@ -421,6 +420,10 @@ MonoBehaviour:
     m_RotationOrder: 4
   hungerStep: 5
   hungerText: {fileID: 0}
+  sharkTransform: {fileID: 1316032254393364402, guid: 924d1bcc45719e246b1f07bbef5a7a79, type: 3}
+  sharkScript: {fileID: 6542664389754514765, guid: 924d1bcc45719e246b1f07bbef5a7a79, type: 3}
+  escapeDistance: 3
+  escapeSpeed: 3
 --- !u!114 &4387530726423621235
 MonoBehaviour:
   m_ObjectHideFlags: 0
