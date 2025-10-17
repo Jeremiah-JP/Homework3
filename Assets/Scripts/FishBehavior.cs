@@ -104,7 +104,7 @@ public class FishBehavior : MonoBehaviour
                 break;
         }
         Wobble();
-        hungerText.text = "Fish Hunger: " + hungerVal.ToString("F1");
+       
     }
      void Wobble()
     {

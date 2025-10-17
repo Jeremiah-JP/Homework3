@@ -3,14 +3,12 @@ using TMPro;
 using System.Collections.Generic;
 
 
-public class ShrimpBehavior : MonoBehaviour
+public class ShrimpMovement : MonoBehaviour
 {
     [SerializeField] float minX = -5f, maxX = 5f;
     [SerializeField] float minY = -3f, maxY = 3f;
 
    public Transform shrimpVisual;
-    // [SerializeField] float wiggleSpeed = 5f;
-    // [SerializeField] float wiggleAmount = 10f;
 
     [SerializeField]
     Transform[] possibleTargets;
@@ -32,7 +30,7 @@ public class ShrimpBehavior : MonoBehaviour
 
     //enum is like a custom variable type
     //we're using it to make states for our spider's behavior
-    enum SpiderStates
+    enum ShrimpStates
     {
         eating,
         dying,
@@ -41,7 +39,7 @@ public class ShrimpBehavior : MonoBehaviour
     }
 
     //current state
-    SpiderStates state = SpiderStates.idling;
+    ShrimpStates state = ShrimpStates.idling;
 
     //timer that'll count down for hunger
     float hungerTime;
@@ -81,37 +79,32 @@ public class ShrimpBehavior : MonoBehaviour
             float distance = Vector3.Distance(transform.position, fishTransform.position);
             if (distance < escapeDistance)
             {
-                state = SpiderStates.fleeing;
+                state = ShrimpStates.fleeing;
                 target = null;
             }
-            else if (state == SpiderStates.fleeing)
+            else if (state == ShrimpStates.fleeing)
             {
-                state = SpiderStates.idling; // return to normal if fish is far
+                state = ShrimpStates.idling; // return to normal if fish is far
             }
         }
 
         switch (state)
         {
-            case SpiderStates.idling:
+            case ShrimpStates.idling:
                 RunIdle();
                 break;
-            case SpiderStates.eating:
+            case ShrimpStates.eating:
                 RunEat();
                 break;
-            case SpiderStates.dying:
+            case ShrimpStates.dying:
                 break;
-            case SpiderStates.fleeing:
+            case ShrimpStates.fleeing:
                 RunAwayFromFish();
                 break;
         }
         //Wobble();
-        hungerText.text = "Shrimp Hunger: " + hungerVal.ToString("F1");
+        
     }
-   // void Wobble()
-    //{
-    //    float wobble = Mathf.Sin(Time.time * wiggleSpeed) * wiggleAmount;
-   //     fishVisual.localRotation = Quaternion.Euler(0, 0, wobble);
-   // }
 
     void RunIdle()
     {
@@ -119,7 +112,7 @@ public class ShrimpBehavior : MonoBehaviour
         if (hungerVal <= 3) // <-- threshold you can tweak
         {
             target = null; // clear current wander target
-            state = SpiderStates.eating;
+            state = ShrimpStates.eating;
             return;
         }
 
@@ -161,7 +154,7 @@ public class ShrimpBehavior : MonoBehaviour
             target = FindNearest(allFood); // find closest food
             if (target == null) // no food available
             {
-                state = SpiderStates.idling;
+                state = ShrimpStates.idling;
                 return;
             }
             startPos = transform.position;
@@ -179,7 +172,7 @@ public class ShrimpBehavior : MonoBehaviour
 
                 touchingObj = null;
                 target = null;
-                state = SpiderStates.idling;
+                state = ShrimpStates.idling;
             }
         }
     }
@@ -243,7 +236,7 @@ public class ShrimpBehavior : MonoBehaviour
 
     public bool IsChasingFood()
     {
-        return state == SpiderStates.eating;
+        return state == ShrimpStates.eating;
     }
 
     void OnTriggerEnter2D(Collider2D col)

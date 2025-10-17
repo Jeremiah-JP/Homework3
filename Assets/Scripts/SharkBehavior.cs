@@ -54,14 +54,8 @@ public class SharkBehavior : MonoBehaviour
     //holds which game object the spider has touched
     GameObject touchingObj;
 
-    //could use to display organism stats for debugging. should NOT be in the final game
-    [SerializeField]
-    TMP_Text hungerText;
 
-    [SerializeField]
-    Transform shrimpTransform;
 
-    [SerializeField] ShrimpBehavior shrimpScript;
 
     [SerializeField] float escapeDistance = 3f;
     [SerializeField] float escapeSpeed = 3f;
@@ -73,18 +67,21 @@ public class SharkBehavior : MonoBehaviour
 
     void Update()
     {
-        if (shrimpScript != null && shrimpScript.IsChasingFood())
-        {
-            float distance = Vector3.Distance(transform.position, shrimpTransform.position);
-            if (distance < escapeDistance)
-            {
-                state = SpiderStates.fleeing;
-            }
-            else if (state == SpiderStates.fleeing)
-            {
-                state = SpiderStates.idling; // return to normal if fish is far
-            }
-        }
+
+        StepNeeds(); 
+
+      //  if (shrimpScript != null && shrimpScript.IsChasingFood())
+       // {
+          //  float distance = Vector3.Distance(transform.position, shrimpTransform.position);
+          //  if (distance < escapeDistance)
+          //  {
+           //     state = SpiderStates.fleeing;
+            //}
+         //   else if (state == SpiderStates.fleeing)
+          //  {
+            //    state = SpiderStates.idling; // return to normal if fish is far
+           // }
+       // }
 
         switch (state)
         {
@@ -101,7 +98,7 @@ public class SharkBehavior : MonoBehaviour
                 //;
         }
         //Wobble();
-        hungerText.text = "Shark Hunger: " + hungerVal.ToString("F1");
+        
     }
     // void Wobble()
     //{
@@ -147,13 +144,13 @@ public class SharkBehavior : MonoBehaviour
             }
         }
 
-        StepNeeds(); // hunger still goes down
     }
 
     void RunEat()
     {
         if (target == null)
         {
+            FindAllFood();
             target = FindNearest(allFood); // find closest food
             if (target == null) // no food available
             {
@@ -167,7 +164,7 @@ public class SharkBehavior : MonoBehaviour
         {
             transform.position = Move();
 
-            if (touchingObj != null && touchingObj.CompareTag("Predator"))
+            if (touchingObj != null && touchingObj.CompareTag("Predator")) 
             {
                 allFood.Remove(touchingObj);
                 hungerVal = 5; // reset hunger
@@ -187,29 +184,70 @@ public class SharkBehavior : MonoBehaviour
         { //if the hunger timer gets to 0
             hungerVal--; //decrease our hunger stat
             hungerTime = hungerStep; //reset the hunger timer
+
+            if (hungerVal <= 0)
+            {
+                Destroy(gameObject, 1f);
+            }
         }
     }
 
     void FindAllFood()
     {
-        allFood.AddRange(GameObject.FindGameObjectsWithTag("Predator")); //find all objs tagged food and put them in a list
+        allFood.AddRange(GameObject.FindGameObjectsWithTag("Predator"));
+       // allFood.AddRange(GameObject.FindGameObjectsWithTag("shrimp"));
     }
 
     Transform FindNearest(List<GameObject> objsToFind)
     {
-        float minDist = Mathf.Infinity; 
-        Transform nearest = null; 
+        float minDist = Mathf.Infinity;
+        Transform nearest = null;
+
+        // Use a temporary list to store any destroyed objects
+        List<GameObject> toRemove = new List<GameObject>();
+
         for (int i = 0; i < objsToFind.Count; i++)
-        { 
-            float dist = Vector3.Distance(transform.position, objsToFind[i].transform.position); 
+        {
+            GameObject obj = objsToFind[i];
+
+            // Skip null or destroyed objects (prevents MissingReferenceException)
+            if (obj == null)
+            {
+                toRemove.Add(obj);
+                continue;
+            }
+
+            float dist = Vector3.Distance(transform.position, obj.transform.position);
             if (dist < minDist)
-            { 
-                minDist = dist; 
-                nearest = objsToFind[i].transform;
+            {
+                minDist = dist;
+                nearest = obj.transform;
             }
         }
-        return nearest; //return the closest obj
+
+        // Clean up null references
+        foreach (GameObject deadObj in toRemove)
+        {
+            objsToFind.Remove(deadObj);
+        }
+
+        return nearest;
     }
+    /* Transform FindNearest(List<GameObject> objsToFind)
+     {
+         float minDist = Mathf.Infinity; 
+         Transform nearest = null; 
+         for (int i = 0; i < objsToFind.Count; i++)
+         { 
+             float dist = Vector3.Distance(transform.position, objsToFind[i].transform.position); 
+             if (dist < minDist)
+             { 
+                 minDist = dist; 
+                 nearest = objsToFind[i].transform;
+             }
+         }
+         return nearest; //return the closest obj
+     }*/
 
     Vector3 Move()
     {
@@ -221,15 +259,15 @@ public class SharkBehavior : MonoBehaviour
 
     void RunAwayFromFish()
     {
-        if (shrimpTransform == null) return; 
+     //   if (shrimpTransform == null) return; 
 
-        Vector3 awayDirection = (transform.position - shrimpTransform.position).normalized;
-        Vector3 newPos = transform.position + awayDirection * escapeSpeed * Time.deltaTime;
+      //  Vector3 awayDirection = (transform.position - shrimpTransform.position).normalized;
+       // Vector3 newPos = transform.position + awayDirection * escapeSpeed * Time.deltaTime;
 
-        newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
-        newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
+        //newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
+       // newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
 
-        transform.position = newPos;
+       // transform.position = newPos;
     }
 
     public bool IsChasingFood()

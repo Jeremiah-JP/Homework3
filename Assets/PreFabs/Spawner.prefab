@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5119209902652874221}
   - component: {fileID: 17845992699376456}
+  - component: {fileID: 372305076514423088}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -51,3 +52,17 @@ MonoBehaviour:
   sharkPrefab: {fileID: 8555556959436243919, guid: 924d1bcc45719e246b1f07bbef5a7a79, type: 3}
   fishPrefab: {fileID: 8516074015003904223, guid: f30dda452f629c640a216eab271515c2, type: 3}
   shrimpPrefab: {fileID: 4092187592882392516, guid: 16683a9ab8ac8b149a866ac122e55c9d, type: 3}
+--- !u!114 &372305076514423088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4831283825482311573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90ee44cd1e23188489ef02daf5edf4aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swarmerprefab: {fileID: 0}
+  swarmerInterval: 3.5
